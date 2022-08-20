@@ -11,9 +11,9 @@ package Events
 
 import (
 	"errors"
-	"github.com/gef/GoEasy/Utils/db"
-	"github.com/gef/GoEasy/Utils/util"
-	"github.com/gef/sms/SmsModels"
+	"github.com/yqstech/gef/GoEasy/Utils/db"
+	"github.com/yqstech/gef/GoEasy/Utils/util"
+	"github.com/yqstech/gef-sms/SmsModels"
 	"github.com/wonderivan/logger"
 	"time"
 )

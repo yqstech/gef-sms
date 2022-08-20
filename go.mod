@@ -1,9 +1,9 @@
-module github.com/gef/sms
+module github.com/yqstech/gef-sms
 
 go 1.17
 
 require (
-	github.com/gef v0.0.1
+	github.com/yqstech/gef v0.0.1
 )
 
-replace github.com/gef v0.0.1 => ../GoEasyFrame
+replace github.com/yqstech/gef v0.0.1 => ../GoEasyFrame

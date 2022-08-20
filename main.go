@@ -11,10 +11,10 @@ package sms
 
 import (
 	"fmt"
-	"github.com/gef"
-	"github.com/gef/sms/Events"
-	"github.com/gef/sms/Registry"
 	"github.com/julienschmidt/httprouter"
+	"github.com/yqstech/gef"
+	"github.com/yqstech/gef-sms/Events"
+	"github.com/yqstech/gef-sms/Registry"
 	"net/http"
 )
 
@@ -26,6 +26,8 @@ func Init(g *gef.Gef) {
 	dbm.AutoTable(tables)
 	//维护后台菜单
 	dbm.AutoAdminRules(adminRules)
+	//维护内置数据
+	dbm.AutoInsideData(insideData)
 	
 	//!注册后台页面
 	g.SetAdminPages(Registry.AdminPages)

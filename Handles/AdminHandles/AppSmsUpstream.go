@@ -11,10 +11,10 @@ package AdminHandles
 
 import (
 	"errors"
-	"github.com/gef/GoEasy/EasyApp"
-	"github.com/gef/GoEasy/Handles/adminHandle"
-	"github.com/gef/GoEasy/Utils/db"
-	"github.com/gef/GoEasy/Utils/util"
+	"github.com/yqstech/gef/GoEasy/EasyApp"
+	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
+	"github.com/yqstech/gef/GoEasy/Utils/db"
+	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/gohouse/gorose/v2"
 	"github.com/wonderivan/logger"
 )

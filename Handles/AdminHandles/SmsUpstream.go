@@ -10,10 +10,10 @@
 package AdminHandles
 
 import (
-	"github.com/gef/GoEasy/EasyApp"
-	"github.com/gef/GoEasy/Handles/adminHandle"
-	"github.com/gef/GoEasy/Models"
-	"github.com/gef/config"
+	"github.com/yqstech/gef/GoEasy/EasyApp"
+	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
+	"github.com/yqstech/gef/GoEasy/Models"
+	"github.com/yqstech/gef/config"
 )
 
 type SmsUpstream struct {

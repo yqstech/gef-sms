@@ -10,8 +10,8 @@
 package Registry
 
 import (
-	"github.com/gef/GoEasy/EasyApp"
-	"github.com/gef/sms/Handles/AdminHandles"
+	"github.com/yqstech/gef/GoEasy/EasyApp"
+	"github.com/yqstech/gef-sms/Handles/AdminHandles"
 )
 
 var AdminPages = map[string]EasyApp.AppPage{

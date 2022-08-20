@@ -9,7 +9,7 @@
 
 package sms
 
-import "github.com/gef"
+import "github.com/yqstech/gef"
 
 // tables 需要维护的所有的表结构体
 var tables = []interface{}{

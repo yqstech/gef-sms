@@ -9,10 +9,22 @@
 
 package Events
 
-import "github.com/gef/GoEasy/Event"
+import "github.com/yqstech/gef/GoEasy/Event"
 
 // Listeners 事件监听列表
 var Listeners = map[string][]Event.Listener{
+	//短信记录验证码
+	"SmsSaveCode": {
+		SmsSaveCode{},
+	},
+	//短信校验验证码
+	"SmsCheckCode": {
+		SmsCheckCode{},
+	},
+	//短信渲染并发送
+	"SmsDisplayAndSend":[]Event.Listener{
+	
+	},
 	//发送短信
 	"SmsSend": []Event.Listener{
 		//#Map tel(string) ip(string) content(string) template_out_id(string)
