@@ -10,10 +10,10 @@
 package AdminHandles
 
 import (
-	"github.com/yqstech/gef/GoEasy/EasyApp"
-	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
-	"github.com/yqstech/gef/GoEasy/Models"
 	"github.com/yqstech/gef-sms/SmsModels"
+	"github.com/yqstech/gef/Handles/adminHandle"
+	"github.com/yqstech/gef/Models"
+	"github.com/yqstech/gef/builder"
 )
 
 type AppSmsBlackWhite struct {
@@ -21,30 +21,30 @@ type AppSmsBlackWhite struct {
 }
 
 // NodeBegin 开始
-func (that AppSmsBlackWhite) NodeBegin(pageData *EasyApp.PageData) (error, int) {
-	pageData.SetTitle("短信黑名单和白名单")
-	pageData.SetPageName("黑白名单")
-	pageData.SetTbName("tb_app_sms_black_white")
+func (that AppSmsBlackWhite) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.SetTitle("短信黑名单和白名单")
+	pageBuilder.SetPageName("黑白名单")
+	pageBuilder.SetTbName("tb_app_sms_black_white")
 	return nil, 0
 }
 
 // NodeList 初始化列表
-func (that AppSmsBlackWhite) NodeList(pageData *EasyApp.PageData) (error, int) {
-	pageData.ListColumnClear()
-	pageData.ListColumnAdd("type", "类型", "array", SmsModels.SmsBlackWhiteTypes)
-	pageData.ListColumnAdd("rule_type", "匹配类型", "array", SmsModels.SmsBlackWhiteRuleTypes)
-	pageData.ListColumnAdd("rule", "手机号或ip地址", "text", nil)
-	pageData.ListColumnAdd("note", "备注", "text", nil)
-	pageData.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
+func (that AppSmsBlackWhite) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.ListColumnClear()
+	pageBuilder.ListColumnAdd("type", "类型", "array", SmsModels.SmsBlackWhiteTypes)
+	pageBuilder.ListColumnAdd("rule_type", "匹配类型", "array", SmsModels.SmsBlackWhiteRuleTypes)
+	pageBuilder.ListColumnAdd("rule", "手机号或ip地址", "text", nil)
+	pageBuilder.ListColumnAdd("note", "备注", "text", nil)
+	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
 
 	return nil, 0
 }
 
 // NodeForm 初始化表单
-func (that AppSmsBlackWhite) NodeForm(pageData *EasyApp.PageData, id int64) (error, int) {
-	pageData.FormFieldsAdd("type", "radio", "类型", "", "0", true, SmsModels.SmsBlackWhiteTypes, "", nil)
-	pageData.FormFieldsAdd("rule_type", "radio", "匹配类型", "", "0", true, SmsModels.SmsBlackWhiteRuleTypes, "", nil)
-	pageData.FormFieldsAdd("rule", "text", "匹配内容", "手机号或ip地址", "", true, nil, "", nil)
-	pageData.FormFieldsAdd("note", "text", "备注", "", "", false, nil, "", nil)
+func (that AppSmsBlackWhite) NodeForm(pageBuilder *builder.PageBuilder, id int64) (error, int) {
+	pageBuilder.FormFieldsAdd("type", "radio", "类型", "", "0", true, SmsModels.SmsBlackWhiteTypes, "", nil)
+	pageBuilder.FormFieldsAdd("rule_type", "radio", "匹配类型", "", "0", true, SmsModels.SmsBlackWhiteRuleTypes, "", nil)
+	pageBuilder.FormFieldsAdd("rule", "text", "匹配内容", "手机号或ip地址", "", true, nil, "", nil)
+	pageBuilder.FormFieldsAdd("note", "text", "备注", "", "", false, nil, "", nil)
 	return nil, 0
 }

@@ -9,7 +9,7 @@
 
 package Events
 
-import "github.com/yqstech/gef/GoEasy/Event"
+import "github.com/yqstech/gef/Event"
 
 // Listeners 事件监听列表
 var Listeners = map[string][]Event.Listener{
@@ -22,9 +22,7 @@ var Listeners = map[string][]Event.Listener{
 		SmsCheckCode{},
 	},
 	//短信渲染并发送
-	"SmsDisplayAndSend":[]Event.Listener{
-	
-	},
+	"SmsDisplayAndSend": []Event.Listener{},
 	//发送短信
 	"SmsSend": []Event.Listener{
 		//#Map tel(string) ip(string) content(string) template_out_id(string)

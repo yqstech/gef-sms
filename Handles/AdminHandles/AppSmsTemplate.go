@@ -11,12 +11,12 @@ package AdminHandles
 
 import (
 	"errors"
-	"github.com/yqstech/gef/GoEasy/EasyApp"
-	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
-	"github.com/yqstech/gef/GoEasy/Models"
-	"github.com/yqstech/gef/GoEasy/Utils/db"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/Handles/adminHandle"
+	"github.com/yqstech/gef/Models"
+	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/util"
 	"strings"
 )
 
@@ -25,7 +25,7 @@ type AppSmsTemplate struct {
 }
 
 // NodeBegin 开始
-func (that AppSmsTemplate) NodeBegin(pageData *EasyApp.PageData) (error, int) {
+func (that AppSmsTemplate) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
 	//同步模板信息
 	templateList, err := db.New().Table("tb_sms_template").
 		Where("is_delete", 0).
@@ -35,7 +35,7 @@ func (that AppSmsTemplate) NodeBegin(pageData *EasyApp.PageData) (error, int) {
 		return errors.New("查询信息出错！"), 0
 	}
 	for _, templateInfo := range templateList {
-		Managertemplate, err := db.New().Table("tb_app_sms_template").
+		ManagerTemplate, err := db.New().Table("tb_app_sms_template").
 			Where("template_name", templateInfo["template_name"]).
 			Where("is_delete", 0).
 			First()
@@ -43,7 +43,7 @@ func (that AppSmsTemplate) NodeBegin(pageData *EasyApp.PageData) (error, int) {
 			logger.Error(err.Error())
 			return errors.New("查询信息出错！"), 0
 		}
-		if Managertemplate == nil {
+		if ManagerTemplate == nil {
 			db.New().Table("tb_app_sms_template").Insert(map[string]interface{}{
 				"template_name":    templateInfo["template_name"],
 				"template_content": templateInfo["default_content"],
@@ -53,19 +53,19 @@ func (that AppSmsTemplate) NodeBegin(pageData *EasyApp.PageData) (error, int) {
 			})
 		}
 	}
-	pageData.SetTitle("短信模板管理")
-	pageData.SetPageName("短信模板")
-	pageData.SetTbName("tb_app_sms_template")
+	pageBuilder.SetTitle("短信模板管理")
+	pageBuilder.SetPageName("短信模板")
+	pageBuilder.SetTbName("tb_app_sms_template")
 	return nil, 0
 }
 
 // NodeList 初始化列表
-func (that AppSmsTemplate) NodeList(pageData *EasyApp.PageData) (error, int) {
+func (that AppSmsTemplate) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
 	//清除列表顶部和右侧按钮
-	pageData.ListRightBtnsClear()
-	pageData.ListTopBtnsClear()
+	pageBuilder.ListRightBtnsClear()
+	pageBuilder.ListTopBtnsClear()
 	//重置右侧按钮
-	pageData.SetListRightBtns("edit", "disable", "enable")
+	pageBuilder.SetListRightBtns("edit", "disable", "enable")
 	//获取列表
 	templateOptions, err, code := Models.Model{}.SelectOptionsData("tb_sms_template", map[string]string{
 		"template_name":  "value",
@@ -74,34 +74,34 @@ func (that AppSmsTemplate) NodeList(pageData *EasyApp.PageData) (error, int) {
 	if err != nil {
 		return err, code
 	}
-	pageData.ListColumnAdd("template_name", "模板标识", "text", nil)
-	pageData.ListColumnAdd("template_name", "模板名称", "array", templateOptions)
-	pageData.ListColumnAdd("template_out_id", "外部模板ID", "text", nil)
-	pageData.ListColumnAdd("template_content", "模板内容", "text", nil)
-	pageData.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
+	pageBuilder.ListColumnAdd("template_name", "模板标识", "text", nil)
+	pageBuilder.ListColumnAdd("template_name", "模板名称", "array", templateOptions)
+	pageBuilder.ListColumnAdd("template_out_id", "外部模板ID", "text", nil)
+	pageBuilder.ListColumnAdd("template_content", "模板内容", "text", nil)
+	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
 	return nil, 0
 }
 
 // NodeForm 初始化表单
-func (that AppSmsTemplate) NodeForm(pageData *EasyApp.PageData, id int64) (error, int) {
+func (that AppSmsTemplate) NodeForm(pageBuilder *builder.PageBuilder, id int64) (error, int) {
 	//查询通道
 	if id <= 0 {
 		return errors.New("获取通道ID失败！"), 0
 	}
 	//查询应用短信模板
-	managertemplate, err := db.New().Table("tb_app_sms_template").
+	managerTemplate, err := db.New().Table("tb_app_sms_template").
 		Where("id", id).
 		Where("is_delete", 0).
 		First()
 	if err != nil {
 		return err, 0
 	}
-	if managertemplate == nil {
+	if managerTemplate == nil {
 		return errors.New("获取通道信息失败！"), 0
 	}
 	// 查询短信模板
 	templateInfo, err := db.New().Table("tb_sms_template").
-		Where("template_name", managertemplate["template_name"]).
+		Where("template_name", managerTemplate["template_name"]).
 		Where("is_delete", 0).
 		Where("status", 1).First()
 	if err != nil {
@@ -113,8 +113,8 @@ func (that AppSmsTemplate) NodeForm(pageData *EasyApp.PageData, id int64) (error
 		contentNotices = contentNotices + "{{" + v + "}}"
 	}
 
-	pageData.FormFieldsAdd("template_out_id", "text", "外部模板ID", "例如阿里云模板ID SMS_123456", "", false, nil, "", nil)
-	pageData.FormFieldsAdd("template_content", "textarea", "模板内容", "变量格式为变量+双花括号，例如验证码：{{code}}", "", false, nil, "", nil)
-	pageData.FormFieldsAdd("", "notice", "", contentNotices, "", false, nil, "", nil)
+	pageBuilder.FormFieldsAdd("template_out_id", "text", "外部模板ID", "例如阿里云模板ID SMS_123456", "", false, nil, "", nil)
+	pageBuilder.FormFieldsAdd("template_content", "textarea", "模板内容", "变量格式为变量+双花括号，例如验证码：{{code}}", "", false, nil, "", nil)
+	pageBuilder.FormFieldsAdd("", "notice", "", contentNotices, "", false, nil, "", nil)
 	return nil, 0
 }

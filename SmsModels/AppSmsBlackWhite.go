@@ -10,9 +10,9 @@
 package SmsModels
 
 import (
-	"github.com/yqstech/gef/GoEasy/Utils/db"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/util"
 )
 
 type AppSmsBlackWhite struct {

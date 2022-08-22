@@ -19,7 +19,7 @@ import (
 )
 
 func Init(g *gef.Gef) {
-	
+
 	//!数据库自动维护
 	dbm := gef.DbManager{}
 	//维护表结构
@@ -28,12 +28,12 @@ func Init(g *gef.Gef) {
 	dbm.AutoAdminRules(adminRules)
 	//维护内置数据
 	dbm.AutoInsideData(insideData)
-	
+
 	//!注册后台页面
 	g.SetAdminPages(Registry.AdminPages)
 	//!注册监听事件
 	g.SetEvent(Events.Listeners)
-	
+
 	//!测试追加前台路由
 	g.AddFrontRouters([]gef.FrontRouter{
 		{

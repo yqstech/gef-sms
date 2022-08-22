@@ -12,9 +12,9 @@ package Events
 import (
 	"bytes"
 	"errors"
-	"github.com/yqstech/gef/GoEasy/Event"
-	"github.com/yqstech/gef/GoEasy/Utils/db"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/Event"
+	"github.com/yqstech/gef/Utils/db"
 	"strings"
 	"text/template"
 )
@@ -28,7 +28,7 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 	ip := data[1].(string)
 	templateName := data[2].(string)
 	templateParams := data[3].(map[string]interface{})
-	
+
 	//获取外部模板ID和短信内容
 	//查询应用短信模板信息
 	SmsTemplate, err := db.New().Table("tb_app_sms_template").
@@ -63,15 +63,15 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 		logger.Error(err.Error())
 		return errors.New("短信模板设置错误！"), 500
 	}
-	
+
 	//短信发送参数
 	ps := map[string]interface{}{
-		"template_name":   templateName, //模板名称
-		"content":         buf.String(), //短信内容，接口如果需要上传短信内容，则使用这个
-		"template_out_id": templateOutId, //短信外模板ID
-		"params":          templateParams,//短信参数，远程模板，需要在短信服务商那里渲染模板，
+		"template_name":   templateName,   //模板名称
+		"content":         buf.String(),   //短信内容，接口如果需要上传短信内容，则使用这个
+		"template_out_id": templateOutId,  //短信外模板ID
+		"params":          templateParams, //短信参数，远程模板，需要在短信服务商那里渲染模板，
 	}
-	
+
 	err, code := Event.Trigger("SmsSend", tel, ip, ps)
 	return err, code
 }

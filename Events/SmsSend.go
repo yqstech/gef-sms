@@ -11,10 +11,10 @@ package Events
 
 import (
 	"errors"
-	"github.com/yqstech/gef/GoEasy/Event"
-	"github.com/yqstech/gef/GoEasy/Utils/db"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/Event"
+	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/util"
 )
 
 type SmsSend struct {
@@ -41,7 +41,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 		UpstreamEvents[v["id"].(int64)] = v["event_name"].(string)
 		UpstreamIds = append(UpstreamIds, v["id"])
 	}
-	
+
 	//应用通道列表
 	appSmsUpstreams, err := db.New().Table("tb_app_sms_upstream").
 		Where("is_delete", 0).
@@ -55,7 +55,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 	if len(appSmsUpstreams) == 0 {
 		return errors.New("应用未开启短信通道！"), 503
 	}
-	
+
 	//应用短信通道循环
 	for _, item := range appSmsUpstreams {
 		//短信设置项
@@ -70,7 +70,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 		configs["params"] = ps["params"]
 		//手机号码
 		configs["tel"] = tel
-		
+
 		//保存短信记录
 		recordId, err := db.New().Table("tb_app_sms_record").
 			InsertGetId(map[string]interface{}{
@@ -88,10 +88,10 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 			logger.Error(err.Error())
 			return errors.New("系统运行错误"), 500
 		}
-		
+
 		//短信记录ID
 		configs["record_id"] = recordId
-		
+
 		//查找查找通道事件
 		if upstreamEventName, ok := UpstreamEvents[upstreamId]; ok {
 			if upstreamEventName == "" {

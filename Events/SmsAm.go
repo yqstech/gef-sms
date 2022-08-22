@@ -11,8 +11,8 @@ package Events
 
 import (
 	"errors"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/util"
 )
 
 type SmsAm struct {

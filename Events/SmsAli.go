@@ -12,8 +12,8 @@ package Events
 import (
 	"errors"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/util"
 )
 
 type SmsAli struct {

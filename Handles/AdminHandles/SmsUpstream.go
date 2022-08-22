@@ -10,9 +10,9 @@
 package AdminHandles
 
 import (
-	"github.com/yqstech/gef/GoEasy/EasyApp"
-	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
-	"github.com/yqstech/gef/GoEasy/Models"
+	"github.com/yqstech/gef/Handles/adminHandle"
+	"github.com/yqstech/gef/Models"
+	"github.com/yqstech/gef/builder"
 	"github.com/yqstech/gef/config"
 )
 
@@ -28,18 +28,18 @@ var SmsEventList = []map[string]interface{}{
 }
 
 // NodeBegin 开始
-func (that SmsUpstream) NodeBegin(pageData *EasyApp.PageData) (error, int) {
-	pageData.SetTitle("短信通道管理")
-	pageData.SetPageName("短信通道")
-	pageData.SetTbName("tb_sms_upstream")
+func (that SmsUpstream) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.SetTitle("短信通道管理")
+	pageBuilder.SetPageName("短信通道")
+	pageBuilder.SetTbName("tb_sms_upstream")
 	return nil, 0
 }
 
 // NodeList 初始化列表
-func (that SmsUpstream) NodeList(pageData *EasyApp.PageData) (error, int) {
-	pageData.SetListOrder("id asc")
+func (that SmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.SetListOrder("id asc")
 	//新增右侧参数设置按钮
-	pageData.SetButton("params", EasyApp.Button{
+	pageBuilder.SetButton("params", builder.Button{
 		ButtonName: "配置项",
 		Action:     "/sms_upstream_params/index",
 		ActionType: 2,
@@ -53,17 +53,17 @@ func (that SmsUpstream) NodeList(pageData *EasyApp.PageData) (error, int) {
 		},
 	})
 	//!重置右侧按钮
-	pageData.SetListRightBtns("edit", "disable", "enable", "params", "delete")
+	pageBuilder.SetListRightBtns("edit", "disable", "enable", "params", "delete")
 
-	pageData.ListColumnAdd("upstream_name", "通道名称", "text", nil)
-	pageData.ListColumnAdd("event_name", "关联事件", "text", nil)
-	pageData.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
+	pageBuilder.ListColumnAdd("upstream_name", "通道名称", "text", nil)
+	pageBuilder.ListColumnAdd("event_name", "关联事件", "text", nil)
+	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
 	return nil, 0
 }
 
 // NodeForm 初始化表单
-func (that SmsUpstream) NodeForm(pageData *EasyApp.PageData, id int64) (error, int) {
-	pageData.FormFieldsAdd("upstream_name", "text", "通道名称", "", "", true, nil, "", nil)
-	pageData.FormFieldsAdd("event_name", "select", "关联事件", "", "", true, SmsEventList, "", nil)
+func (that SmsUpstream) NodeForm(pageBuilder *builder.PageBuilder, id int64) (error, int) {
+	pageBuilder.FormFieldsAdd("upstream_name", "text", "通道名称", "", "", true, nil, "", nil)
+	pageBuilder.FormFieldsAdd("event_name", "select", "关联事件", "", "", true, SmsEventList, "", nil)
 	return nil, 0
 }

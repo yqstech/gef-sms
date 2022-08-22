@@ -10,9 +10,9 @@
 package AdminHandles
 
 import (
-	"github.com/yqstech/gef/GoEasy/EasyApp"
-	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
+	"github.com/yqstech/gef/Handles/adminHandle"
+	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/util"
 )
 
 type SmsUpstreamParams struct {
@@ -20,22 +20,22 @@ type SmsUpstreamParams struct {
 }
 
 // NodeBegin 开始
-func (that SmsUpstreamParams) NodeBegin(pageData *EasyApp.PageData) (error, int) {
-	pageData.SetTitle("短信通道配置项")
-	pageData.SetPageName("通道配置项")
-	pageData.SetTbName("tb_sms_upstream_params")
+func (that SmsUpstreamParams) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.SetTitle("短信通道配置项")
+	pageBuilder.SetPageName("通道配置项")
+	pageBuilder.SetTbName("tb_sms_upstream_params")
 	return nil, 0
 }
 
 // NodeList 初始化列表
-func (that SmsUpstreamParams) NodeList(pageData *EasyApp.PageData) (error, int) {
-	pageData.SetListOrder("id asc")
+func (that SmsUpstreamParams) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.SetListOrder("id asc")
 	//重设新增按钮增加
 	ActionUrl := "add"
-	upstreamId := util.GetValue(pageData.GetHttpRequest(), "id")
+	upstreamId := util.GetValue(pageBuilder.GetHttpRequest(), "id")
 	if upstreamId != "" {
 		ActionUrl = ActionUrl + "?upstream_id=" + upstreamId
-		pageData.SetButton("add", EasyApp.Button{
+		pageBuilder.SetButton("add", builder.Button{
 			ButtonName: "新增通道配置项",
 			Action:     "add",
 			ActionType: 2,
@@ -52,16 +52,16 @@ func (that SmsUpstreamParams) NodeList(pageData *EasyApp.PageData) (error, int) 
 
 	//获取列表
 	upstreamList := that.SmsUpstreamList()
-	pageData.ListColumnAdd("upstream_id", "短信通道名称", "array", upstreamList)
-	pageData.ListColumnAdd("param_name", "配置项", "text", nil)
-	pageData.ListColumnAdd("param_title", "配置项名称", "text", nil)
+	pageBuilder.ListColumnAdd("upstream_id", "短信通道名称", "array", upstreamList)
+	pageBuilder.ListColumnAdd("param_name", "配置项", "text", nil)
+	pageBuilder.ListColumnAdd("param_title", "配置项名称", "text", nil)
 	return nil, 0
 }
 
 // NodeListCondition 修改查询条件
-func (that SmsUpstreamParams) NodeListCondition(pageData *EasyApp.PageData, condition [][]interface{}) ([][]interface{}, error, int) {
+func (that SmsUpstreamParams) NodeListCondition(pageBuilder *builder.PageBuilder, condition [][]interface{}) ([][]interface{}, error, int) {
 	upstreamID := 0
-	upstreamId := util.GetValue(pageData.GetHttpRequest(), "id")
+	upstreamId := util.GetValue(pageBuilder.GetHttpRequest(), "id")
 	if upstreamId != "" {
 		upstreamID = util.String2Int(upstreamId)
 		//追加查询条件
@@ -74,17 +74,17 @@ func (that SmsUpstreamParams) NodeListCondition(pageData *EasyApp.PageData, cond
 }
 
 // NodeForm 初始化表单
-func (that SmsUpstreamParams) NodeForm(pageData *EasyApp.PageData, id int64) (error, int) {
-	upstreamId := util.GetValue(pageData.GetHttpRequest(), "upstream_id")
+func (that SmsUpstreamParams) NodeForm(pageBuilder *builder.PageBuilder, id int64) (error, int) {
+	upstreamId := util.GetValue(pageBuilder.GetHttpRequest(), "upstream_id")
 	if upstreamId != "" {
-		pageData.FormFieldsAdd("upstream_id", "hidden", "配置项", "", upstreamId, true, nil, "", nil)
+		pageBuilder.FormFieldsAdd("upstream_id", "hidden", "配置项", "", upstreamId, true, nil, "", nil)
 	} else {
 		//获取列表
 		upstreamList := that.SmsUpstreamList()
-		pageData.FormFieldsAdd("upstream_id", "select", "所属通道", "", "", true, upstreamList, "", nil)
+		pageBuilder.FormFieldsAdd("upstream_id", "select", "所属通道", "", "", true, upstreamList, "", nil)
 	}
 
-	pageData.FormFieldsAdd("param_name", "text", "配置项", "", "", true, nil, "", nil)
-	pageData.FormFieldsAdd("param_title", "text", "配置项名称", "", "", true, nil, "", nil)
+	pageBuilder.FormFieldsAdd("param_name", "text", "配置项", "", "", true, nil, "", nil)
+	pageBuilder.FormFieldsAdd("param_title", "text", "配置项名称", "", "", true, nil, "", nil)
 	return nil, 0
 }

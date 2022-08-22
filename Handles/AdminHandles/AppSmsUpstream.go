@@ -11,12 +11,12 @@ package AdminHandles
 
 import (
 	"errors"
-	"github.com/yqstech/gef/GoEasy/EasyApp"
-	"github.com/yqstech/gef/GoEasy/Handles/adminHandle"
-	"github.com/yqstech/gef/GoEasy/Utils/db"
-	"github.com/yqstech/gef/GoEasy/Utils/util"
 	"github.com/gohouse/gorose/v2"
 	"github.com/wonderivan/logger"
+	"github.com/yqstech/gef/Handles/adminHandle"
+	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/util"
 )
 
 type AppSmsUpstream struct {
@@ -27,7 +27,7 @@ type AppSmsUpstream struct {
 var upstreamIds []int64
 
 // NodeBegin 开始
-func (that AppSmsUpstream) NodeBegin(pageData *EasyApp.PageData) (error, int) {
+func (that AppSmsUpstream) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
 	//同步通道信息
 	upstreamList, err := db.New().Table("tb_sms_upstream").
 		Where("is_delete", 0).
@@ -58,28 +58,28 @@ func (that AppSmsUpstream) NodeBegin(pageData *EasyApp.PageData) (error, int) {
 	}
 
 	//
-	pageData.SetTitle("短信通道管理")
-	pageData.SetPageName("短信通道")
-	pageData.SetTbName("tb_app_sms_upstream")
-	pageData.SetPageNotice("配置并开启多个通道，发送短信时会按照优先级(值小的优先级高)选取第一个通道发送短信，失败会启用下一个通道重新发送，直到发送成功或无可用通道！")
+	pageBuilder.SetTitle("短信通道管理")
+	pageBuilder.SetPageName("短信通道")
+	pageBuilder.SetTbName("tb_app_sms_upstream")
+	pageBuilder.SetPageNotice("配置并开启多个通道，发送短信时会按照优先级(值小的优先级高)选取第一个通道发送短信，失败会启用下一个通道重新发送，直到发送成功或无可用通道！")
 	return nil, 0
 }
 
 // NodeList 初始化列表
-func (that AppSmsUpstream) NodeList(pageData *EasyApp.PageData) (error, int) {
-	pageData.ListColumnClear()
+func (that AppSmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.ListColumnClear()
 	//清除列表顶部和右侧按钮
-	pageData.ListRightBtnsClear()
-	pageData.ListTopBtnsClear()
+	pageBuilder.ListRightBtnsClear()
+	pageBuilder.ListTopBtnsClear()
 	//重置右侧按钮
-	pageData.SetListRightBtns("edit")
+	pageBuilder.SetListRightBtns("edit")
 	//排序
-	pageData.SetListOrder("index_num,id asc")
+	pageBuilder.SetListOrder("index_num,id asc")
 
 	//获取列表
 	upstreamOptions := that.SmsUpstreamList()
 
-	pageData.SetButton("edit", EasyApp.Button{
+	pageBuilder.SetButton("edit", builder.Button{
 		ButtonName: "通道设置",
 		Action:     "edit",
 		ActionType: 2,
@@ -93,14 +93,14 @@ func (that AppSmsUpstream) NodeList(pageData *EasyApp.PageData) (error, int) {
 		},
 	})
 
-	pageData.ListColumnAdd("upstream_id", "短信通道", "array", upstreamOptions)
-	pageData.ListColumnAdd("index_num", "优先级", "text", nil)
-	pageData.ListColumnAdd("status", "状态", "switch", nil)
+	pageBuilder.ListColumnAdd("upstream_id", "短信通道", "array", upstreamOptions)
+	pageBuilder.ListColumnAdd("index_num", "优先级", "text", nil)
+	pageBuilder.ListColumnAdd("status", "状态", "switch", nil)
 	return nil, 0
 }
 
 // NodeListCondition 修改查询条件
-func (that AppSmsUpstream) NodeListCondition(pageData *EasyApp.PageData, condition [][]interface{}) ([][]interface{}, error, int) {
+func (that AppSmsUpstream) NodeListCondition(pageBuilder *builder.PageBuilder, condition [][]interface{}) ([][]interface{}, error, int) {
 	//追加查询条件
 	condition = append(condition, []interface{}{
 		"upstream_id", "in", upstreamIds,
@@ -109,12 +109,12 @@ func (that AppSmsUpstream) NodeListCondition(pageData *EasyApp.PageData, conditi
 }
 
 // NodeForm 初始化表单
-func (that AppSmsUpstream) NodeForm(pageData *EasyApp.PageData, id int64) (error, int) {
+func (that AppSmsUpstream) NodeForm(pageBuilder *builder.PageBuilder, id int64) (error, int) {
 	//查询通道
 	if id <= 0 {
 		return errors.New("获取通道ID失败！"), 0
 	}
-	pageData.FormFieldsAdd("index_num", "text", "通道优先级", "值越小越优先", "200", true, nil, "", nil)
+	pageBuilder.FormFieldsAdd("index_num", "text", "通道优先级", "值越小越优先", "200", true, nil, "", nil)
 	//查询原通道信息
 	managerUpstream, err := db.New().Table("tb_app_sms_upstream").
 		Where("id", id).
@@ -142,14 +142,14 @@ func (that AppSmsUpstream) NodeForm(pageData *EasyApp.PageData, id int64) (error
 		if v, ok := configs[param["param_name"].(string)]; ok {
 			value = v.(string)
 		}
-		pageData.FormFieldsAdd(param["param_name"].(string), "text", param["param_title"].(string), "", value, true, nil, "",
+		pageBuilder.FormFieldsAdd(param["param_name"].(string), "text", param["param_title"].(string), "", value, true, nil, "",
 			nil)
 	}
 	return nil, 0
 }
 
 // NodeSaveData 表单保存数据前使用
-func (that AppSmsUpstream) NodeSaveData(pageData *EasyApp.PageData, oldData gorose.Data, postData map[string]interface{}) (map[string]interface{}, error, int) {
+func (that AppSmsUpstream) NodeSaveData(pageBuilder *builder.PageBuilder, oldData gorose.Data, postData map[string]interface{}) (map[string]interface{}, error, int) {
 	indexNum := postData["index_num"]
 	delete(postData, "index_num")
 	RealData := map[string]interface{}{
