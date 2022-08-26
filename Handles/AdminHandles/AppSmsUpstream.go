@@ -23,7 +23,7 @@ type AppSmsUpstream struct {
 	adminHandle.Base
 }
 
-//有效通道ID列表
+// 有效通道ID列表
 var upstreamIds []int64
 
 // NodeBegin 开始
@@ -77,7 +77,7 @@ func (that AppSmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	pageBuilder.SetListOrder("index_num,id asc")
 
 	//获取列表
-	upstreamOptions := that.SmsUpstreamList()
+	upstreamOptions := SmsUpstreamList()
 
 	pageBuilder.SetButton("edit", builder.Button{
 		ButtonName: "通道设置",

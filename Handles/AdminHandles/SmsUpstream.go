@@ -10,6 +10,7 @@
 package AdminHandles
 
 import (
+	"github.com/wonderivan/logger"
 	"github.com/yqstech/gef/Handles/adminHandle"
 	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/builder"
@@ -66,4 +67,18 @@ func (that SmsUpstream) NodeForm(pageBuilder *builder.PageBuilder, id int64) (er
 	pageBuilder.FormFieldsAdd("upstream_name", "text", "通道名称", "", "", true, nil, "", nil)
 	pageBuilder.FormFieldsAdd("event_name", "select", "关联事件", "", "", true, SmsEventList, "", nil)
 	return nil, 0
+}
+
+func SmsUpstreamList() []map[string]interface{} {
+	//获取列表
+	//获取列表
+	upstreamOptions, err, _ := Models.Model{}.SelectOptionsData("tb_sms_upstream", map[string]string{
+		"id":            "value",
+		"upstream_name": "name",
+	}, "", "", "", "")
+	if err != nil {
+		logger.Error(err.Error())
+		return nil
+	}
+	return upstreamOptions
 }

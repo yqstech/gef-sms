@@ -33,7 +33,7 @@ func (that AppSmsRecord) NodeList(pageBuilder *builder.PageBuilder) (error, int)
 	pageBuilder.ListTopBtnsClear()
 	pageBuilder.ListRightBtnsClear()
 	//获取列表
-	upstreamOptions := that.SmsUpstreamList()
+	upstreamOptions := SmsUpstreamList()
 	pageBuilder.ListColumnAdd("template_name", "短信模板", "text", nil)
 	pageBuilder.ListColumnAdd("upstream_id", "短信通道", "array", upstreamOptions)
 	pageBuilder.ListColumnAdd("tel", "手机号码", "text", nil)

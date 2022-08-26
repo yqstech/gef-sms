@@ -51,7 +51,7 @@ func (that SmsUpstreamParams) NodeList(pageBuilder *builder.PageBuilder) (error,
 	}
 
 	//获取列表
-	upstreamList := that.SmsUpstreamList()
+	upstreamList := SmsUpstreamList()
 	pageBuilder.ListColumnAdd("upstream_id", "短信通道名称", "array", upstreamList)
 	pageBuilder.ListColumnAdd("param_name", "配置项", "text", nil)
 	pageBuilder.ListColumnAdd("param_title", "配置项名称", "text", nil)
@@ -80,7 +80,7 @@ func (that SmsUpstreamParams) NodeForm(pageBuilder *builder.PageBuilder, id int6
 		pageBuilder.FormFieldsAdd("upstream_id", "hidden", "配置项", "", upstreamId, true, nil, "", nil)
 	} else {
 		//获取列表
-		upstreamList := that.SmsUpstreamList()
+		upstreamList := SmsUpstreamList()
 		pageBuilder.FormFieldsAdd("upstream_id", "select", "所属通道", "", "", true, upstreamList, "", nil)
 	}
 
