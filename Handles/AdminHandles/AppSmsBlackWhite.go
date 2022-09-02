@@ -35,7 +35,7 @@ func (that AppSmsBlackWhite) NodeList(pageBuilder *builder.PageBuilder) (error, 
 	pageBuilder.ListColumnAdd("rule_type", "匹配类型", "array", SmsModels.SmsBlackWhiteRuleTypes)
 	pageBuilder.ListColumnAdd("rule", "手机号或ip地址", "text", nil)
 	pageBuilder.ListColumnAdd("note", "备注", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
 
 	return nil, 0
 }

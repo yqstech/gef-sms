@@ -38,7 +38,7 @@ func (that AppSmsHoldBack) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	pageBuilder.ListColumnAdd("action", "执行操作", "array", SmsModels.SmsHoldBackActions)
 	pageBuilder.ListColumnAdd("frozen_second", "暂停秒数", "text", nil)
 	pageBuilder.ListColumnAdd("note", "备注", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
 	return nil, 0
 }
 

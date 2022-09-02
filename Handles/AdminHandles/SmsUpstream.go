@@ -58,7 +58,7 @@ func (that SmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, int) 
 
 	pageBuilder.ListColumnAdd("upstream_name", "通道名称", "text", nil)
 	pageBuilder.ListColumnAdd("event_name", "关联事件", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ById(2, true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
 	return nil, 0
 }
 
