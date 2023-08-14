@@ -105,4 +105,17 @@ var insideData = []gef.InsideData{
 		"param_name":  "url",
 		"param_title": "接口地址",
 	}},
+	//短信模板
+	{TableName: "tb_sms_template", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
+		"id":              1,
+		"template_name":   "default",
+		"template_title":  "默认模板",
+		"template_vars":   "code",
+		"default_content": "您的验证码是{{code}}，请不要告诉任何人！",
+	}}, {TableName: "tb_app_sms_template", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
+		"id":              1,
+		"template_name":   "default",
+		"template_out_id": "SMS_123456",
+		"default_content": "您的验证码是{{code}}，请不要告诉任何人！",
+	}},
 }
