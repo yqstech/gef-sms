@@ -22,16 +22,23 @@ var insideData = []gef.InsideData{
 		"upstream_name": "万象&创信",
 		"event_name":    "SmsJdcx",
 		"index_num":     "2",
+		"status":        0,
 	}}, {TableName: "tb_sms_upstream", Condition: [][]interface{}{{"id", "3"}}, Data: map[string]interface{}{
 		"id":            3,
 		"upstream_name": "云市场短信",
 		"event_name":    "SmsAm",
 		"index_num":     "3",
+		"status":        0,
 	}}, {TableName: "tb_sms_upstream", Condition: [][]interface{}{{"id", "4"}}, Data: map[string]interface{}{
 		"id":            4,
 		"upstream_name": "模拟发短信",
 		"event_name":    "SmsMock",
 		"index_num":     "4",
+	}}, {TableName: "tb_sms_upstream", Condition: [][]interface{}{{"id", "5"}}, Data: map[string]interface{}{
+		"id":            5,
+		"upstream_name": "创信",
+		"event_name":    "SmsCdcx",
+		"index_num":     "5",
 	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
 		"id":          1,
 		"upstream_id": 1,
@@ -72,5 +79,30 @@ var insideData = []gef.InsideData{
 		"upstream_id": 3,
 		"param_name":  "sign",
 		"param_title": "短信签名",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "9"}}, Data: map[string]interface{}{
+		"id":          9,
+		"upstream_id": 5,
+		"param_name":  "sign",
+		"param_title": "短信签名",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "10"}}, Data: map[string]interface{}{
+		"id":          10,
+		"upstream_id": 5,
+		"param_name":  "account",
+		"param_title": "创信账户",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "11"}}, Data: map[string]interface{}{
+		"id":          11,
+		"upstream_id": 5,
+		"param_name":  "password",
+		"param_title": "账户密码",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "12"}}, Data: map[string]interface{}{
+		"id":          12,
+		"upstream_id": 5,
+		"param_name":  "extno",
+		"param_title": "SP服务号",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "13"}}, Data: map[string]interface{}{
+		"id":          13,
+		"upstream_id": 5,
+		"param_name":  "url",
+		"param_title": "接口地址",
 	}},
 }

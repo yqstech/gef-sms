@@ -95,7 +95,7 @@ func (that AppSmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, in
 
 	pageBuilder.ListColumnAdd("upstream_id", "短信通道", "array", upstreamOptions)
 	pageBuilder.ListColumnAdd("index_num", "优先级", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "switch", nil)
+	pageBuilder.ListColumnAdd("status", "状态", "switch::text=开启|关闭", nil)
 	return nil, 0
 }
 

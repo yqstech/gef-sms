@@ -19,6 +19,7 @@ var adminRules = []map[string]interface{}{
 				"is_compel": 0,
 				"icon":      "icon-message-3-fill",
 				"route":     "#sms_config",
+				"index_num": 99,
 				"children": []map[string]interface{}{
 					{
 						"name":      "短信通道",

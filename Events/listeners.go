@@ -22,7 +22,9 @@ var Listeners = map[string][]Event.Listener{
 		SmsCheckCode{},
 	},
 	//短信渲染并发送
-	"SmsDisplayAndSend": []Event.Listener{},
+	"SmsDisplayAndSend": []Event.Listener{
+		SmsDisplayAndSend{},
+	},
 	//发送短信
 	"SmsSend": []Event.Listener{
 		//#Map tel(string) ip(string) content(string) template_out_id(string)
@@ -40,5 +42,8 @@ var Listeners = map[string][]Event.Listener{
 	},
 	"SmsMock": []Event.Listener{
 		SmsMock{}, //模拟短信
+	},
+	"SmsCdcx": []Event.Listener{
+		SmsCdcx{}, //成都创信
 	},
 }
