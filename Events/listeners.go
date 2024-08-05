@@ -46,4 +46,7 @@ var Listeners = map[string][]Event.Listener{
 	"SmsCdcx": []Event.Listener{
 		SmsCdcx{}, //成都创信
 	},
+	"SmsZj": []Event.Listener{
+		SmsZj{}, //广州掌骏
+	},
 }

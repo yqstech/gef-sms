@@ -39,6 +39,11 @@ var insideData = []gef.InsideData{
 		"upstream_name": "创信",
 		"event_name":    "SmsCdcx",
 		"index_num":     "5",
+	}}, {TableName: "tb_sms_upstream", Condition: [][]interface{}{{"id", "6"}}, Data: map[string]interface{}{
+		"id":            6,
+		"upstream_name": "掌骏",
+		"event_name":    "SmsZj",
+		"index_num":     "6",
 	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
 		"id":          1,
 		"upstream_id": 1,
@@ -105,6 +110,27 @@ var insideData = []gef.InsideData{
 		"param_name":  "url",
 		"param_title": "接口地址",
 	}},
+	{TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "14"}}, Data: map[string]interface{}{
+		"id":          14,
+		"upstream_id": 6,
+		"param_name":  "sign",
+		"param_title": "短信签名",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "15"}}, Data: map[string]interface{}{
+		"id":          15,
+		"upstream_id": 6,
+		"param_name":  "account",
+		"param_title": "账户名称",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "16"}}, Data: map[string]interface{}{
+		"id":          16,
+		"upstream_id": 6,
+		"param_name":  "password",
+		"param_title": "账户密码",
+	}}, {TableName: "tb_sms_upstream_params", Condition: [][]interface{}{{"id", "17"}}, Data: map[string]interface{}{
+		"id":          17,
+		"upstream_id": 6,
+		"param_name":  "url",
+		"param_title": "接口地址",
+	}},
 	//短信模板
 	{TableName: "tb_sms_template", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
 		"id":              1,
@@ -113,9 +139,9 @@ var insideData = []gef.InsideData{
 		"template_vars":   "code",
 		"default_content": "您的验证码是{{code}}，请不要告诉任何人！",
 	}}, {TableName: "tb_app_sms_template", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
-		"id":              1,
-		"template_name":   "default",
-		"template_out_id": "SMS_123456",
-		"default_content": "您的验证码是{{code}}，请不要告诉任何人！",
+		"id":               1,
+		"template_name":    "default",
+		"template_out_id":  "SMS_123456",
+		"template_content": "您的验证码是{{code}}，请不要告诉任何人！",
 	}},
 }
