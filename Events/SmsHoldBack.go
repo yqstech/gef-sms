@@ -24,7 +24,7 @@ type SmsHoldBack struct {
 // Do 短信发送过滤，防止恶意发送短信
 func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 	ps := data[0].(map[string]interface{})
-
+	uniappId := data[1].(string)
 	//手机号临时阻止
 	holdBack, holdBackMsg := SmsModels.Sms{}.IsHoldBackTel(ps["tel"].(string))
 	if holdBack {
@@ -45,6 +45,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 	blackWhite, err := db.New().Table("tb_app_sms_black_white").
 		Where("is_delete", 0).
 		Where("status", 1).
+		Where("uniapp_id", uniappId).
 		Get()
 	if err != nil {
 		logger.Error(err.Error())
@@ -75,6 +76,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 	holdBackRules, err := db.New().Table("tb_app_sms_hold_back").
 		Where("is_delete", 0).
 		Where("status", 1).
+		Where("uniapp_id", uniappId).
 		Order("sms_max asc").
 		Get()
 	if err != nil {
@@ -95,6 +97,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 			formTime := util.UnixTimeFormat(t-rule["range_second"].(int64), "2006-01-02 15:04:05")
 			sendCount, err := db.New().Table("tb_app_sms_record").
 				Where("is_delete", 0).
+				Where("uniapp_id", uniappId).
 				Where("tel", ps["tel"].(string)).
 				Where("status", "<", 4).
 				Where("create_time", ">=", formTime).
@@ -111,7 +114,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 					returnErr = errors.New("您的操作过于频繁！")
 				} else if rule["action"].(int64) == 2 {
 					//手机号拉黑
-					SmsModels.AppSmsBlackWhite{}.AddBlack(0, ps["tel"].(string), "[自动拉黑]"+rule["note"].(string))
+					SmsModels.AppSmsBlackWhite{}.AddBlack(uniappId, 0, ps["tel"].(string), "[自动拉黑]"+rule["note"].(string))
 					returnErr = errors.New("您的操作过于频繁！")
 				}
 			}
@@ -124,6 +127,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 			formTime := util.UnixTimeFormat(t-rule["range_second"].(int64), "2006-01-02 15:04:05")
 			sendCount, err := db.New().Table("tb_app_sms_record").
 				Where("is_delete", 0).
+				Where("uniapp_id", uniappId).
 				Where("ip", ps["ip"].(string)).
 				Where("status", "<", 4).
 				Where("create_time", ">=", formTime).
@@ -140,7 +144,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 					returnErr = errors.New("您的操作过于频繁！")
 				} else if rule["action"].(int64) == 2 {
 					//IP地址拉黑
-					SmsModels.AppSmsBlackWhite{}.AddBlack(1, ps["ip"].(string), "[自动拉黑]"+rule["note"].(string))
+					SmsModels.AppSmsBlackWhite{}.AddBlack(uniappId, 1, ps["ip"].(string), "[自动拉黑]"+rule["note"].(string))
 					returnErr = errors.New("您的操作过于频繁！")
 				}
 			}
@@ -153,6 +157,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 			formTime := util.UnixTimeFormat(t-rule["range_second"].(int64), "2006-01-02 15:04:05")
 			sendCount, err := db.New().Table("tb_app_sms_record").
 				Where("is_delete", 0).
+				Where("uniapp_id", uniappId).
 				Where("status", "<", 4).
 				Where("create_time", ">=", formTime).
 				Count()

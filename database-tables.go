@@ -75,6 +75,7 @@ func (m *TbSmsTemplate) TableName() string {
 // TbAppSmsUpstream 应用短信通道列表
 type TbAppSmsUpstream struct {
 	gef.ID
+	UniAppId   int    `gorm:"column:uniapp_id;type:int(11);default:0;NOT NULL;comment:应用ID|账号所属小程序" json:"uniapp_id"`
 	UpstreamID int    `gorm:"column:upstream_id;type:int(11);default:0;NOT NULL" json:"upstream_id"`
 	Configs    string `gorm:"column:configs;type:varchar(5000);default:{};NOT NULL;comment:应用拓展配置项" json:"configs"` // 应用拓展配置项
 	IndexNum   int    `gorm:"column:index_num;type:int(11);default:200;NOT NULL;comment:排序" json:"index_num"`       // 排序
@@ -88,6 +89,7 @@ func (m *TbAppSmsUpstream) TableName() string {
 // TbAppSmsTemplate 应用短信模板
 type TbAppSmsTemplate struct {
 	gef.ID
+	UniAppId        int    `gorm:"column:uniapp_id;type:int(11);default:0;NOT NULL;comment:应用ID|账号所属小程序" json:"uniapp_id"`
 	TemplateName    string `gorm:"column:template_name;type:varchar(30);default:'';NOT NULL;comment:模板标识" json:"template_name"`          // 模板标识
 	TemplateOutID   string `gorm:"column:template_out_id;type:varchar(30);default:'';NOT NULL;comment:外部模板ID" json:"template_out_id"`    // 外部模板ID
 	TemplateContent string `gorm:"column:template_content;type:varchar(200);default:'';NOT NULL;comment:短信模板内容" json:"template_content"` // 短信模板内容
@@ -101,6 +103,7 @@ func (m *TbAppSmsTemplate) TableName() string {
 // TbAppSmsRecord 应用短信记录
 type TbAppSmsRecord struct {
 	gef.ID
+	UniAppId      int    `gorm:"column:uniapp_id;type:int(11);default:0;NOT NULL;comment:应用ID|账号所属小程序" json:"uniapp_id"`
 	TemplateName  string `gorm:"column:template_name;type:varchar(30);default:'';NOT NULL;comment:模板标识" json:"template_name"`       // 模板标识
 	UpstreamID    int    `gorm:"column:upstream_id;type:int(11);default:0;NOT NULL;comment:短信通道" json:"upstream_id"`                // 短信通道
 	Tel           string `gorm:"column:tel;type:varchar(20);default:'';NOT NULL;comment:手机号" json:"tel"`                            // 手机号
@@ -118,6 +121,7 @@ func (m *TbAppSmsRecord) TableName() string {
 // TbAppSmsHoldBack 应用短信防火墙
 type TbAppSmsHoldBack struct {
 	gef.ID
+	UniAppId     int    `gorm:"column:uniapp_id;type:int(11);default:0;NOT NULL;comment:应用ID|账号所属小程序" json:"uniapp_id"`
 	RuleType     int    `gorm:"column:rule_type;type:tinyint(4);default:0;NOT NULL;comment:0单个手机号 1单个IP地址 2短信频率" json:"rule_type"` // 0单个手机号 1单个IP地址 2短信频率
 	RangeSecond  int    `gorm:"column:range_second;type:int(11);default:0;NOT NULL;comment:多少秒内" json:"range_second"`              // 多少秒内
 	SmsMax       int    `gorm:"column:sms_max;type:int(11);default:0;NOT NULL;comment:短信次数" json:"sms_max"`                        // 短信次数
@@ -134,6 +138,7 @@ func (m *TbAppSmsHoldBack) TableName() string {
 // TbAppSmsBlackWhite 短信黑白名单
 type TbAppSmsBlackWhite struct {
 	gef.ID
+	UniAppId int    `gorm:"column:uniapp_id;type:int(11);default:0;NOT NULL;comment:应用ID|账号所属小程序" json:"uniapp_id"`
 	Type     int    `gorm:"column:type;type:tinyint(4);default:0;NOT NULL;comment:0黑名单 1白名单" json:"type"`            // 0黑名单 1白名单
 	RuleType int    `gorm:"column:rule_type;type:tinyint(4);default:0;NOT NULL;comment:0手机号 1IP地址" json:"rule_type"` // 0手机号 1IP地址
 	Rule     string `gorm:"column:rule;type:varchar(30);default:'';NOT NULL;comment:手机号或ip" json:"rule"`             // 手机号或ip

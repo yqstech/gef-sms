@@ -15,6 +15,7 @@ import (
 	"github.com/yqstech/gef/Handles/adminHandle"
 	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/util"
 )
 
 type AppSmsHoldBack struct {
@@ -40,6 +41,17 @@ func (that AppSmsHoldBack) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	pageBuilder.ListColumnAdd("note", "备注", "text", nil)
 	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
 	return nil, 0
+}
+
+// NodeListCondition 修改查询条件
+func (that AppSmsHoldBack) NodeListCondition(pageBuilder *builder.PageBuilder, condition [][]interface{}) ([][]interface{}, error, int) {
+	//追加查询条件
+	//多开小程序
+	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
+	condition = append(condition, []interface{}{
+		"uniapp_id", "=", uniappId,
+	})
+	return condition, nil, 0
 }
 
 // NodeListData 重写列表数据
@@ -72,13 +84,25 @@ func (that AppSmsHoldBack) NodeForm(pageBuilder *builder.PageBuilder, id int64) 
 
 // NodeSaveData 表单保存数据前使用
 func (that AppSmsHoldBack) NodeSaveData(pageBuilder *builder.PageBuilder, oldData gorose.Data, postData map[string]interface{}) (map[string]interface{}, error, int) {
-	if postData["rule_type"] == "2" {
-		postData["action"] = postData["action2"]
-	} else {
-		if postData["action"] == "2" {
-			postData["frozen_second"] = -1
+	action := util.PostValue(pageBuilder.GetHttpRequest(), "action")
+	if action != "fastUpdate" {
+		if postData["rule_type"] == "2" {
+			postData["action"] = postData["action2"]
+		} else {
+			if postData["action"] == "2" {
+				postData["frozen_second"] = -1
+			}
 		}
+		delete(postData, "action2")
 	}
-	delete(postData, "action2")
+	return postData, nil, 0
+}
+
+// NodeAutoData 新增或修改调用，新增自动补充小程序ID参数
+func (that AppSmsHoldBack) NodeAutoData(pageBuilder *builder.PageBuilder, postData map[string]interface{}, action string) (map[string]interface{}, error, int) {
+	uniappId := util.String2Int(pageBuilder.HttpParams.ByName("uniapp_id"))
+	if action == "add" {
+		postData["uniapp_id"] = uniappId
+	}
 	return postData, nil, 0
 }

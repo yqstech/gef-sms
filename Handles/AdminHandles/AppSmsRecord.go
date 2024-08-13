@@ -10,8 +10,10 @@
 package AdminHandles
 
 import (
+	"github.com/wonderivan/logger"
 	"github.com/yqstech/gef/Handles/adminHandle"
 	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/util"
 )
 
 type AppSmsRecord struct {
@@ -50,4 +52,16 @@ func (that AppSmsRecord) NodeList(pageBuilder *builder.PageBuilder) (error, int)
 	pageBuilder.SetListColumnStyle("msg", "max-width:200px;overflow-x:auto")
 	pageBuilder.SetStyle("table td{word-break: keep-all;white-space:nowrap;}")
 	return nil, 0
+}
+
+// NodeListCondition 修改查询条件
+func (that AppSmsRecord) NodeListCondition(pageBuilder *builder.PageBuilder, condition [][]interface{}) ([][]interface{}, error, int) {
+	//追加查询条件
+	//多开小程序
+	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
+	logger.Error("短信模块，获取uniappId", uniappId)
+	condition = append(condition, []interface{}{
+		"uniapp_id", "=", uniappId,
+	})
+	return condition, nil, 0
 }

@@ -26,6 +26,7 @@ type AppSmsTemplate struct {
 
 // NodeBegin 开始
 func (that AppSmsTemplate) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
+	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
 	//同步模板信息
 	templateList, err := db.New().Table("tb_sms_template").
 		Where("is_delete", 0).
@@ -36,8 +37,9 @@ func (that AppSmsTemplate) NodeBegin(pageBuilder *builder.PageBuilder) (error, i
 	}
 	for _, templateInfo := range templateList {
 		ManagerTemplate, err := db.New().Table("tb_app_sms_template").
-			Where("template_name", templateInfo["template_name"]).
 			Where("is_delete", 0).
+			Where("uniapp_id", uniappId).
+			Where("template_name", templateInfo["template_name"]).
 			First()
 		if err != nil {
 			logger.Error(err.Error())
@@ -45,6 +47,7 @@ func (that AppSmsTemplate) NodeBegin(pageBuilder *builder.PageBuilder) (error, i
 		}
 		if ManagerTemplate == nil {
 			db.New().Table("tb_app_sms_template").Insert(map[string]interface{}{
+				"uniapp_id":        uniappId,
 				"template_name":    templateInfo["template_name"],
 				"template_content": templateInfo["default_content"],
 				"create_time":      util.TimeNow(),
@@ -61,6 +64,7 @@ func (that AppSmsTemplate) NodeBegin(pageBuilder *builder.PageBuilder) (error, i
 
 // NodeList 初始化列表
 func (that AppSmsTemplate) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	pageBuilder.ListColumnClear()
 	//清除列表顶部和右侧按钮
 	pageBuilder.ListRightBtnsClear()
 	pageBuilder.ListTopBtnsClear()
@@ -82,14 +86,27 @@ func (that AppSmsTemplate) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	return nil, 0
 }
 
+// NodeListCondition 修改查询条件
+func (that AppSmsTemplate) NodeListCondition(pageBuilder *builder.PageBuilder, condition [][]interface{}) ([][]interface{}, error, int) {
+	//追加查询条件
+	//多开小程序
+	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
+	condition = append(condition, []interface{}{
+		"uniapp_id", "=", uniappId,
+	})
+	return condition, nil, 0
+}
+
 // NodeForm 初始化表单
 func (that AppSmsTemplate) NodeForm(pageBuilder *builder.PageBuilder, id int64) (error, int) {
 	//查询通道
 	if id <= 0 {
 		return errors.New("获取通道ID失败！"), 0
 	}
+	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
 	//查询应用短信模板
 	managerTemplate, err := db.New().Table("tb_app_sms_template").
+		Where("uniapp_id", uniappId).
 		Where("id", id).
 		Where("is_delete", 0).
 		First()
@@ -117,4 +134,13 @@ func (that AppSmsTemplate) NodeForm(pageBuilder *builder.PageBuilder, id int64) 
 	pageBuilder.FormFieldsAdd("template_content", "textarea", "模板内容", "变量格式为变量+双花括号，例如验证码：{{code}}", "", false, nil, "", nil)
 	pageBuilder.FormFieldsAdd("", "notice", "", contentNotices, "", false, nil, "", nil)
 	return nil, 0
+}
+
+// NodeAutoData 新增或修改调用，新增自动补充小程序ID参数
+func (that AppSmsTemplate) NodeAutoData(pageBuilder *builder.PageBuilder, postData map[string]interface{}, action string) (map[string]interface{}, error, int) {
+	uniappId := util.String2Int(pageBuilder.HttpParams.ByName("uniapp_id"))
+	if action == "add" {
+		postData["uniapp_id"] = uniappId
+	}
+	return postData, nil, 0
 }

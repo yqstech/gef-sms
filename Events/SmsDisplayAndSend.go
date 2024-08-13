@@ -28,13 +28,18 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 	ip := data[1].(string)
 	templateName := data[2].(string)
 	templateParams := data[3].(map[string]interface{})
-
+	//获取uniappId
+	uniappId := "0"
+	if len(data) > 4 {
+		uniappId = data[4].(string)
+	}
 	//获取外部模板ID和短信内容
 	//查询应用短信模板信息
 	SmsTemplate, err := db.New().Table("tb_app_sms_template").
-		Where("template_name", templateName).
 		Where("is_delete", 0).
 		Where("status", 1).
+		Where("uniapp_id", uniappId).
+		Where("template_name", templateName).
 		First()
 	if err != nil {
 		logger.Error(err.Error())
@@ -64,6 +69,15 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 		return errors.New("短信模板设置错误！"), 500
 	}
 
+	//短信防火墙
+	err, code := Event.Trigger("SmsHoldBack", map[string]any{
+		"tel": tel,
+		"ip":  ip,
+	}, uniappId)
+	if err != nil {
+		return err, code
+	}
+
 	//短信发送参数
 	ps := map[string]interface{}{
 		"template_name":   templateName,   //模板名称
@@ -72,6 +86,6 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 		"params":          templateParams, //短信参数，远程模板，需要在短信服务商那里渲染模板，
 	}
 
-	err, code := Event.Trigger("SmsSend", tel, ip, ps)
+	err, code = Event.Trigger("SmsSend", tel, ip, ps, uniappId)
 	return err, code
 }

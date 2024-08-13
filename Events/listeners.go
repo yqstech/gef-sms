@@ -13,6 +13,10 @@ import "github.com/yqstech/gef/Event"
 
 // Listeners 事件监听列表
 var Listeners = map[string][]Event.Listener{
+	//短信防火墙
+	"SmsHoldBack": {
+		SmsHoldBack{},
+	},
 	//短信记录验证码
 	"SmsSaveCode": {
 		SmsSaveCode{},

@@ -24,6 +24,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 	tel := data[0].(string)
 	ip := data[1].(string)
 	ps := data[2].(map[string]interface{})
+	uniappId := data[3].(string)
 	//通道列表
 	SmsUpstreams, err := db.New().Table("tb_sms_upstream").
 		Where("is_delete", 0).
@@ -46,6 +47,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 	appSmsUpstreams, err := db.New().Table("tb_app_sms_upstream").
 		Where("is_delete", 0).
 		Where("status", 1).
+		Where("uniapp_id", uniappId).
 		WhereIn("upstream_id", UpstreamIds).
 		Order("index_num asc").Get()
 	if err != nil {
@@ -74,6 +76,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 		//保存短信记录
 		recordId, err := db.New().Table("tb_app_sms_record").
 			InsertGetId(map[string]interface{}{
+				"uniapp_id":       uniappId,
 				"template_name":   ps["template_name"].(string),
 				"upstream_id":     upstreamId,
 				"tel":             tel,
