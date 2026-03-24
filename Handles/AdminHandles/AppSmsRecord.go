@@ -59,9 +59,11 @@ func (that AppSmsRecord) NodeListCondition(pageBuilder *builder.PageBuilder, con
 	//追加查询条件
 	//多开小程序
 	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
-	logger.Error("短信模块，获取uniappId", uniappId)
-	condition = append(condition, []interface{}{
-		"uniapp_id", "=", uniappId,
-	})
+	if uniappId > 0 {
+		logger.Error("短信模块，获取uniappId", uniappId)
+		condition = append(condition, []interface{}{
+			"uniapp_id", "=", uniappId,
+		})
+	}
 	return condition, nil, 0
 }
