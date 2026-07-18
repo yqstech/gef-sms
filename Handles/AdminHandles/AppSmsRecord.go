@@ -12,6 +12,7 @@ package AdminHandles
 import (
 	"github.com/wonderivan/logger"
 	"github.com/yqstech/gef/Handles/adminHandle"
+	"github.com/yqstech/gef/Utils/db"
 	"github.com/yqstech/gef/builder"
 	"github.com/yqstech/gef/util"
 )
@@ -30,6 +31,33 @@ func (that AppSmsRecord) NodeBegin(pageBuilder *builder.PageBuilder) (error, int
 
 // NodeList 初始化列表
 func (that AppSmsRecord) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
+	if uniappTable != "" {
+		//新增多应用设置
+		uniappList, err := db.New().Table(uniappTable).
+			Where("is_delete", 0).
+			Where("status", 1).
+			Order("index_num asc,id asc").
+			Get()
+		if err != nil {
+			logger.Error(err.Error())
+			return err, 500
+		}
+		if len(uniappList) > 0 {
+			//!设置tabs列表和选中项
+			validUrl := util.UrlScreenParam(pageBuilder.GetHttpRequest(), []string{}, false, true)
+			//!设置系统默认的一项
+			pageBuilder.PageTabAdd("系统默认", validUrl+"tab=0&uniapp_id=0")
+			//!其他应用往后排
+			for index, uniappInfo := range uniappList {
+				pageBuilder.PageTabAdd(uniappInfo["app_name"].(string), validUrl+"tab="+util.Int2String(index+1)+"&uniapp_id="+util.Int642String(uniappInfo["id"].(int64)))
+			}
+			//获取第几页
+			tabIndex := that.GetTabIndex(pageBuilder, "tab")
+			//设置第几个tab选中
+			pageBuilder.SetPageTabSelect(tabIndex)
+		}
+	}
 	pageBuilder.ListColumnClear()
 	pageBuilder.SetListOrder("id desc")
 	pageBuilder.ListTopBtnsClear()
@@ -59,8 +87,16 @@ func (that AppSmsRecord) NodeListCondition(pageBuilder *builder.PageBuilder, con
 	//追加查询条件
 	//多开小程序
 	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
+	//多开小程序新增tab多开
+	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
+	if uniappTable != "" {
+		tab := util.GetValue(pageBuilder.GetHttpRequest(), "tab")
+		getUniappId := util.GetValue(pageBuilder.GetHttpRequest(), "uniapp_id")
+		if tab != "" && getUniappId != "" {
+			uniappId = util.String2Int(getUniappId)
+		}
+	}
 	if uniappId > 0 {
-		logger.Error("短信模块，获取uniappId", uniappId)
 		condition = append(condition, []interface{}{
 			"uniapp_id", "=", uniappId,
 		})

@@ -27,6 +27,22 @@ type AppSmsUpstream struct {
 func (that AppSmsUpstream) NodeBegin(pageBuilder *builder.PageBuilder) (error, int) {
 	//多开小程序管理后台管理应用短信模块，在中间件设置ps.uniapp_id选项，就可以管理分账户
 	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
+	uniappIds := []any{uniappId}
+	//多开小程序新增tab多开
+	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
+	if uniappTable != "" {
+		uniappList, err := db.New().Table(uniappTable).
+			Where("is_delete", 0).
+			Where("status", 1).
+			Order("index_num asc,id asc").
+			Get()
+		if err != nil {
+			logger.Error(err.Error())
+			return err, 500
+		}
+		ids := db.Data2Ids(uniappList, "id")
+		uniappIds = append(uniappIds, ids...)
+	}
 	//同步通道信息
 	upstreamList, err := db.New().Table("tb_sms_upstream").
 		Where("is_delete", 0).
@@ -36,25 +52,28 @@ func (that AppSmsUpstream) NodeBegin(pageBuilder *builder.PageBuilder) (error, i
 		return errors.New("查询信息出错！"), 0
 	}
 	for _, upstreamInfo := range upstreamList {
-		ManagerUpstream, err := db.New().Table("tb_app_sms_upstream").
-			Where("is_delete", 0).
-			Where("uniapp_id", uniappId).
-			Where("upstream_id", upstreamInfo["id"]).
-			First()
-		if err != nil {
-			logger.Error(err.Error())
-			return errors.New("查询信息出错！"), 0
+		for _, uniId := range uniappIds {
+			ManagerUpstream, err := db.New().Table("tb_app_sms_upstream").
+				Where("is_delete", 0).
+				Where("uniapp_id", uniId).
+				Where("upstream_id", upstreamInfo["id"]).
+				First()
+			if err != nil {
+				logger.Error(err.Error())
+				return errors.New("查询信息出错！"), 0
+			}
+			if ManagerUpstream == nil {
+				db.New().Table("tb_app_sms_upstream").Insert(map[string]interface{}{
+					"uniapp_id":   uniId,
+					"upstream_id": upstreamInfo["id"],
+					"configs":     "{}",
+					"create_time": util.TimeNow(),
+					"update_time": util.TimeNow(),
+					"status":      0,
+				})
+			}
 		}
-		if ManagerUpstream == nil {
-			db.New().Table("tb_app_sms_upstream").Insert(map[string]interface{}{
-				"uniapp_id":   uniappId,
-				"upstream_id": upstreamInfo["id"],
-				"configs":     "{}",
-				"create_time": util.TimeNow(),
-				"update_time": util.TimeNow(),
-				"status":      0,
-			})
-		}
+
 	}
 
 	//
@@ -67,6 +86,34 @@ func (that AppSmsUpstream) NodeBegin(pageBuilder *builder.PageBuilder) (error, i
 
 // NodeList 初始化列表
 func (that AppSmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, int) {
+	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
+	if uniappTable != "" {
+		//新增多应用设置
+		uniappList, err := db.New().Table(uniappTable).
+			Where("is_delete", 0).
+			Where("status", 1).
+			Order("index_num asc,id asc").
+			Get()
+		if err != nil {
+			logger.Error(err.Error())
+			return err, 500
+		}
+		if len(uniappList) > 0 {
+			//!设置tabs列表和选中项
+			validUrl := util.UrlScreenParam(pageBuilder.GetHttpRequest(), []string{}, false, true)
+			//!设置系统默认的一项
+			pageBuilder.PageTabAdd("系统默认", validUrl+"tab=0&uniapp_id=0")
+			//!其他应用往后排
+			for index, uniappInfo := range uniappList {
+				pageBuilder.PageTabAdd(uniappInfo["app_name"].(string), validUrl+"tab="+util.Int2String(index+1)+"&uniapp_id="+util.Int642String(uniappInfo["id"].(int64)))
+			}
+			//获取第几页
+			tabIndex := that.GetTabIndex(pageBuilder, "tab")
+			//设置第几个tab选中
+			pageBuilder.SetPageTabSelect(tabIndex)
+		}
+	}
+
 	pageBuilder.ListColumnClear()
 	//清除列表顶部和右侧按钮
 	pageBuilder.ListRightBtnsClear()
@@ -103,7 +150,7 @@ func (that AppSmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, in
 func (that AppSmsUpstream) NodeListCondition(pageBuilder *builder.PageBuilder, condition [][]interface{}) ([][]interface{}, error, int) {
 	//追加查询条件
 	//同步通道信息
-	upstreamIds := []int64{-1}
+	upstreamIds := []any{-1}
 	upstreamList, err := db.New().Table("tb_sms_upstream").
 		Where("is_delete", 0).
 		Where("status", "1").Get()
@@ -119,6 +166,15 @@ func (that AppSmsUpstream) NodeListCondition(pageBuilder *builder.PageBuilder, c
 	})
 	//多开小程序
 	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
+	//多开小程序新增tab多开
+	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
+	if uniappTable != "" {
+		tab := util.GetValue(pageBuilder.GetHttpRequest(), "tab")
+		getUniappId := util.GetValue(pageBuilder.GetHttpRequest(), "uniapp_id")
+		if tab != "" && getUniappId != "" {
+			uniappId = util.String2Int(getUniappId)
+		}
+	}
 	condition = append(condition, []interface{}{
 		"uniapp_id", "=", uniappId,
 	})
@@ -134,12 +190,27 @@ func (that AppSmsUpstream) NodeForm(pageBuilder *builder.PageBuilder, id int64) 
 	}
 	//多开小程序
 	uniappId := util.String2Int(pageBuilder.GetHttpParams().ByName("uniapp_id"))
-
+	uniappIds := []any{uniappId}
+	//多开小程序新增tab多开
+	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
+	if uniappTable != "" {
+		uniappList, err := db.New().Table(uniappTable).
+			Where("is_delete", 0).
+			Where("status", 1).
+			Order("index_num asc,id asc").
+			Get()
+		if err != nil {
+			logger.Error(err.Error())
+			return err, 500
+		}
+		ids := db.Data2Ids(uniappList, "id")
+		uniappIds = append(uniappIds, ids...)
+	}
 	pageBuilder.FormFieldsAdd("index_num", "text", "通道优先级", "值越小越优先", "200", true, nil, "", nil)
 	//查询原通道信息
 	managerUpstream, err := db.New().Table("tb_app_sms_upstream").
 		Where("is_delete", 0).
-		Where("uniapp_id", uniappId).
+		WhereIn("uniapp_id", uniappIds).
 		Where("id", id).
 		First()
 	if err != nil {
