@@ -12,16 +12,16 @@ package admin
 import (
 	"errors"
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef/Handles/adminHandle"
-	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/boot/db"
 	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/handles/admin"
+	"github.com/yqstech/gef/schema"
 	"github.com/yqstech/gef/util"
 	"strings"
 )
 
 type AppSmsTemplate struct {
-	adminHandle.Base
+	admin.Base
 }
 
 // NodeBegin 开始
@@ -117,7 +117,7 @@ func (that AppSmsTemplate) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	//重置右侧按钮
 	pageBuilder.SetListRightBtns("edit", "disable", "enable")
 	//获取列表
-	templateOptions, err, code := Models.Model{}.SelectOptionsData("tb_sms_template", map[string]string{
+	templateOptions, err, code := schema.Model{}.SelectOptionsData("tb_sms_template", map[string]string{
 		"template_name":  "value",
 		"template_title": "name",
 	}, "", "", "", "")
@@ -128,7 +128,7 @@ func (that AppSmsTemplate) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	pageBuilder.ListColumnAdd("template_name", "模板名称", "array", templateOptions)
 	pageBuilder.ListColumnAdd("template_out_id", "外部模板ID", "text", nil)
 	pageBuilder.ListColumnAdd("template_content", "模板内容", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", schema.OptionModels{}.ByKey("status", true))
 	return nil, 0
 }
 

@@ -11,14 +11,14 @@ package admin
 
 import (
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef/Handles/adminHandle"
-	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/builder"
 	"github.com/yqstech/gef/config"
+	"github.com/yqstech/gef/handles/admin"
+	"github.com/yqstech/gef/schema"
 )
 
 type SmsUpstream struct {
-	adminHandle.Base
+	admin.Base
 }
 
 var SmsEventList = []map[string]interface{}{
@@ -58,7 +58,7 @@ func (that SmsUpstream) NodeList(pageBuilder *builder.PageBuilder) (error, int) 
 
 	pageBuilder.ListColumnAdd("upstream_name", "通道名称", "text", nil)
 	pageBuilder.ListColumnAdd("event_name", "关联事件", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", schema.OptionModels{}.ByKey("status", true))
 	return nil, 0
 }
 
@@ -72,7 +72,7 @@ func (that SmsUpstream) NodeForm(pageBuilder *builder.PageBuilder, id int64) (er
 func SmsUpstreamList() []map[string]interface{} {
 	//获取列表
 	//获取列表
-	upstreamOptions, err, _ := Models.Model{}.SelectOptionsData("tb_sms_upstream", map[string]string{
+	upstreamOptions, err, _ := schema.Model{}.SelectOptionsData("tb_sms_upstream", map[string]string{
 		"id":            "value",
 		"upstream_name": "name",
 	}, "", "", "", "")

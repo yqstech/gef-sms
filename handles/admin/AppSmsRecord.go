@@ -11,14 +11,14 @@ package admin
 
 import (
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef/Handles/adminHandle"
 	"github.com/yqstech/gef/boot/db"
 	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/handles/admin"
 	"github.com/yqstech/gef/util"
 )
 
 type AppSmsRecord struct {
-	adminHandle.Base
+	admin.Base
 }
 
 // NodeBegin 开始

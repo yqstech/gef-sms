@@ -12,15 +12,15 @@ package admin
 import (
 	"github.com/wonderivan/logger"
 	"github.com/yqstech/gef-sms/models"
-	"github.com/yqstech/gef/Handles/adminHandle"
-	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/boot/db"
 	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/handles/admin"
+	"github.com/yqstech/gef/schema"
 	"github.com/yqstech/gef/util"
 )
 
 type AppSmsBlackWhite struct {
-	adminHandle.Base
+	admin.Base
 }
 
 // NodeBegin 开始
@@ -66,7 +66,7 @@ func (that AppSmsBlackWhite) NodeList(pageBuilder *builder.PageBuilder) (error, 
 	pageBuilder.ListColumnAdd("rule_type", "匹配类型", "array", models.SmsBlackWhiteRuleTypes)
 	pageBuilder.ListColumnAdd("rule", "手机号或ip地址", "text", nil)
 	pageBuilder.ListColumnAdd("note", "备注", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", schema.OptionModels{}.ByKey("status", true))
 
 	return nil, 0
 }
@@ -97,7 +97,7 @@ func (that AppSmsBlackWhite) NodeForm(pageBuilder *builder.PageBuilder, id int64
 	uniappTable := pageBuilder.GetHttpParams().ByName("_uniapp_table")
 	if uniappTable != "" {
 		//后台管理多个小程序，在这里新增一个多选小程序
-		uniappOptions, err, code := Models.Model{}.SelectOptionsData(uniappTable, map[string]string{
+		uniappOptions, err, code := schema.Model{}.SelectOptionsData(uniappTable, map[string]string{
 			"id":       "value",
 			"app_name": "name",
 		}, "0", "系统默认", "status=1", "index_num asc,id asc")

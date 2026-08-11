@@ -10,13 +10,13 @@
 package admin
 
 import (
-	"github.com/yqstech/gef/Handles/adminHandle"
-	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/builder"
+	"github.com/yqstech/gef/handles/admin"
+	"github.com/yqstech/gef/schema"
 )
 
 type SmsTemplate struct {
-	adminHandle.Base
+	admin.Base
 }
 
 // NodeBegin 开始
@@ -33,7 +33,7 @@ func (that SmsTemplate) NodeList(pageBuilder *builder.PageBuilder) (error, int) 
 	pageBuilder.ListColumnAdd("template_title", "模板名称", "text", nil)
 	pageBuilder.ListColumnAdd("template_vars", "模板变量", "text", nil)
 	pageBuilder.ListColumnAdd("default_content", "默认模板内容", "text", nil)
-	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
+	pageBuilder.ListColumnAdd("status", "状态", "array", schema.OptionModels{}.ByKey("status", true))
 	return nil, 0
 }
 
