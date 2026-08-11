@@ -10,7 +10,7 @@
 package SmsModels
 
 import (
-	"github.com/yqstech/gef/Utils/pool"
+	"github.com/yqstech/gef/boot/pool"
 	"time"
 )
 

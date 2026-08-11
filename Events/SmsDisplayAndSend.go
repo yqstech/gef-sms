@@ -14,7 +14,7 @@ import (
 	"errors"
 	"github.com/wonderivan/logger"
 	"github.com/yqstech/gef/Event"
-	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/boot/db"
 	"strings"
 	"text/template"
 )

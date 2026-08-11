@@ -11,7 +11,7 @@ package SmsModels
 
 import (
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/boot/db"
 	"github.com/yqstech/gef/util"
 )
 

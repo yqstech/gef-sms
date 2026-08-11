@@ -15,7 +15,7 @@ import (
 	"github.com/yqstech/gef-sms/SmsModels"
 	"github.com/yqstech/gef/Handles/adminHandle"
 	"github.com/yqstech/gef/Models"
-	"github.com/yqstech/gef/Utils/db"
+	"github.com/yqstech/gef/boot/db"
 	"github.com/yqstech/gef/builder"
 	"github.com/yqstech/gef/util"
 )
