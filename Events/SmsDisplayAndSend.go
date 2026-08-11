@@ -13,8 +13,8 @@ import (
 	"bytes"
 	"errors"
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef/Event"
 	"github.com/yqstech/gef/boot/db"
+	"github.com/yqstech/gef/event"
 	"strings"
 	"text/template"
 )
@@ -70,7 +70,7 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 	}
 
 	//短信防火墙
-	err, code := Event.Trigger("SmsHoldBack", map[string]any{
+	err, code := event.Trigger("SmsHoldBack", map[string]any{
 		"tel": tel,
 		"ip":  ip,
 	}, uniappId)
@@ -86,6 +86,6 @@ func (that SmsDisplayAndSend) Do(eventName string, data ...interface{}) (error, 
 		"params":          templateParams, //短信参数，远程模板，需要在短信服务商那里渲染模板，
 	}
 
-	err, code = Event.Trigger("SmsSend", tel, ip, ps, uniappId)
+	err, code = event.Trigger("SmsSend", tel, ip, ps, uniappId)
 	return err, code
 }

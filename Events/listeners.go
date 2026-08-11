@@ -9,10 +9,10 @@
 
 package Events
 
-import "github.com/yqstech/gef/Event"
+import "github.com/yqstech/gef/event"
 
 // Listeners 事件监听列表
-var Listeners = map[string][]Event.Listener{
+var Listeners = map[string][]event.Listener{
 	//短信防火墙
 	"SmsHoldBack": {
 		SmsHoldBack{},
@@ -26,31 +26,31 @@ var Listeners = map[string][]Event.Listener{
 		SmsCheckCode{},
 	},
 	//短信渲染并发送
-	"SmsDisplayAndSend": []Event.Listener{
+	"SmsDisplayAndSend": []event.Listener{
 		SmsDisplayAndSend{},
 	},
 	//发送短信
-	"SmsSend": []Event.Listener{
+	"SmsSend": []event.Listener{
 		//#Map tel(string) ip(string) content(string) template_out_id(string)
 		SmsSend{}, //发送短信
 	},
 	//发送短信通道
-	"SmsAli": []Event.Listener{
+	"SmsAli": []event.Listener{
 		SmsAli{}, //阿里短信
 	},
-	"SmsAm": []Event.Listener{
+	"SmsAm": []event.Listener{
 		SmsAm{}, //云市场
 	},
-	"SmsJdcx": []Event.Listener{
+	"SmsJdcx": []event.Listener{
 		SmsJdcx{}, //京东万象
 	},
-	"SmsMock": []Event.Listener{
+	"SmsMock": []event.Listener{
 		SmsMock{}, //模拟短信
 	},
-	"SmsCdcx": []Event.Listener{
+	"SmsCdcx": []event.Listener{
 		SmsCdcx{}, //成都创信
 	},
-	"SmsZj": []Event.Listener{
+	"SmsZj": []event.Listener{
 		SmsZj{}, //广州掌骏
 	},
 }

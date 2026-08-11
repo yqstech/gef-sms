@@ -12,8 +12,8 @@ package Events
 import (
 	"errors"
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef/Event"
 	"github.com/yqstech/gef/boot/db"
+	"github.com/yqstech/gef/event"
 	"github.com/yqstech/gef/util"
 )
 
@@ -100,7 +100,7 @@ func (that SmsSend) Do(eventName string, data ...interface{}) (error, int) {
 			if upstreamEventName == "" {
 				return errors.New("短信通道未指定事件！"), 503
 			}
-			err, errCode := Event.Trigger(upstreamEventName, configs)
+			err, errCode := event.Trigger(upstreamEventName, configs)
 			if err != nil {
 				//!其他错误标记失败
 				db.New().Table("tb_app_sms_record").
