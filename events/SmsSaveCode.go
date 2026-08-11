@@ -7,7 +7,7 @@
  * @Date: 2022/8/17 11:18
  */
 
-package Events
+package events
 
 import (
 	"github.com/yqstech/gef-sms/SmsModels"

@@ -7,7 +7,7 @@
  * @Date: 2022/8/17 13:17
  */
 
-package Events
+package events
 
 import (
 	"bytes"

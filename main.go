@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/yqstech/gef"
-	"github.com/yqstech/gef-sms/Events"
 	"github.com/yqstech/gef-sms/Registry"
+	"github.com/yqstech/gef-sms/events"
 	"github.com/yqstech/gef/dbkit"
 	"net/http"
 )
@@ -33,7 +33,7 @@ func Init(g *gef.Gef) {
 	//!注册后台页面
 	g.SetAdminPages(Registry.AdminPages)
 	//!注册监听事件
-	g.SetEvent(Events.Listeners)
+	g.SetEvent(events.Listeners)
 
 	//!测试追加前台路由
 	g.AddFrontRouters([]gef.FrontRouter{

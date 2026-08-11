@@ -7,7 +7,7 @@
  * @Date: 2021/11/24 3:11 下午
  */
 
-package Events
+package events
 
 import "github.com/yqstech/gef/event"
 

@@ -7,7 +7,7 @@
  * @Date: 2022/2/8 3:34 下午
  */
 
-package Events
+package events
 
 import (
 	"errors"
