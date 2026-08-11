@@ -7,12 +7,12 @@
  * @Date: 2022/3/8 9:43 下午
  */
 
-package AdminHandles
+package admin
 
 import (
 	"github.com/gohouse/gorose/v2"
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef-sms/SmsModels"
+	"github.com/yqstech/gef-sms/models"
 	"github.com/yqstech/gef/Handles/adminHandle"
 	"github.com/yqstech/gef/Models"
 	"github.com/yqstech/gef/boot/db"
@@ -63,10 +63,10 @@ func (that AppSmsHoldBack) NodeList(pageBuilder *builder.PageBuilder) (error, in
 	}
 
 	pageBuilder.ListColumnClear()
-	pageBuilder.ListColumnAdd("rule_type", "规则类型", "array", SmsModels.SmsHoldBackRuleTypes)
+	pageBuilder.ListColumnAdd("rule_type", "规则类型", "array", models.SmsHoldBackRuleTypes)
 	pageBuilder.ListColumnAdd("range_second", "几秒钟内", "text", nil)
 	pageBuilder.ListColumnAdd("sms_max", "短信超过几条", "text", nil)
-	pageBuilder.ListColumnAdd("action", "执行操作", "array", SmsModels.SmsHoldBackActions)
+	pageBuilder.ListColumnAdd("action", "执行操作", "array", models.SmsHoldBackActions)
 	pageBuilder.ListColumnAdd("frozen_second", "暂停秒数", "text", nil)
 	pageBuilder.ListColumnAdd("note", "备注", "text", nil)
 	pageBuilder.ListColumnAdd("status", "状态", "array", Models.OptionModels{}.ByKey("status", true))
@@ -117,10 +117,10 @@ func (that AppSmsHoldBack) NodeForm(pageBuilder *builder.PageBuilder, id int64) 
 		}
 		pageBuilder.FormFieldsAdd("uniapp_id", "select-sm", "选择应用", "请选择所属应用", "", true, uniappOptions, "", nil)
 	}
-	pageBuilder.FormFieldsAdd("rule_type", "radio", "规则类型", "", "0", true, SmsModels.SmsHoldBackRuleTypes, "", nil)
+	pageBuilder.FormFieldsAdd("rule_type", "radio", "规则类型", "", "0", true, models.SmsHoldBackRuleTypes, "", nil)
 	pageBuilder.FormFieldsAdd("range_second", "text", "几秒钟内", "填写大于0的整数", "", false, nil, "", nil)
 	pageBuilder.FormFieldsAdd("sms_max", "text", "短信超过几条", "填写大于0的整数", "", false, nil, "", nil)
-	pageBuilder.FormFieldsAdd("action", "radio", "执行操作", "", "1", false, SmsModels.SmsHoldBackActions, "", map[string]interface{}{
+	pageBuilder.FormFieldsAdd("action", "radio", "执行操作", "", "1", false, models.SmsHoldBackActions, "", map[string]interface{}{
 		"if": "formFields.rule_type<2",
 	})
 	pageBuilder.FormFieldsAdd("action2", "radio", "执行操作", "", "1", false, []map[string]interface{}{{"name": "暂停短信功能(白名单除外)", "value": "1"}}, "", map[string]interface{}{

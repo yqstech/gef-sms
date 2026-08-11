@@ -7,7 +7,7 @@
  * @Date: 2021/10/29 10:05 下午
  */
 
-package AdminHandles
+package admin
 
 import (
 	"errors"

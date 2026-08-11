@@ -13,8 +13,8 @@ import (
 	"fmt"
 	"github.com/julienschmidt/httprouter"
 	"github.com/yqstech/gef"
-	"github.com/yqstech/gef-sms/Registry"
 	"github.com/yqstech/gef-sms/events"
+	"github.com/yqstech/gef-sms/registry"
 	"github.com/yqstech/gef/dbkit"
 	"net/http"
 )
@@ -31,7 +31,7 @@ func Init(g *gef.Gef) {
 	dbm.AutoInsideData(insideData)
 
 	//!注册后台页面
-	g.SetAdminPages(Registry.AdminPages)
+	g.SetAdminPages(registry.AdminPages)
 	//!注册监听事件
 	g.SetEvent(events.Listeners)
 

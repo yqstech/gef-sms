@@ -12,7 +12,7 @@ package events
 import (
 	"errors"
 	"github.com/wonderivan/logger"
-	"github.com/yqstech/gef-sms/SmsModels"
+	"github.com/yqstech/gef-sms/models"
 	"github.com/yqstech/gef/boot/db"
 	"github.com/yqstech/gef/util"
 	"time"
@@ -26,17 +26,17 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 	ps := data[0].(map[string]interface{})
 	uniappId := data[1].(string)
 	//手机号临时阻止
-	holdBack, holdBackMsg := SmsModels.Sms{}.IsHoldBackTel(ps["tel"].(string))
+	holdBack, holdBackMsg := models.Sms{}.IsHoldBackTel(ps["tel"].(string))
 	if holdBack {
 		return errors.New(holdBackMsg), 502
 	}
 	//ip地址临时阻止
-	holdBack, holdBackMsg = SmsModels.Sms{}.IsHoldBackIp(ps["ip"].(string))
+	holdBack, holdBackMsg = models.Sms{}.IsHoldBackIp(ps["ip"].(string))
 	if holdBack {
 		return errors.New(holdBackMsg), 502
 	}
 	//短信功能暂停
-	holdBack, holdBackMsg = SmsModels.Sms{}.IsHoldBackAll()
+	holdBack, holdBackMsg = models.Sms{}.IsHoldBackAll()
 	if holdBack {
 		return errors.New(holdBackMsg), 502
 	}
@@ -55,8 +55,8 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 		if item["type"].(int64) == 0 {
 			//黑名单直接拦截
 			if item["rule"].(string) == ps["tel"].(string) || item["rule"].(string) == ps["ip"].(string) {
-				SmsModels.Sms{}.HoldBackIp(ps["ip"].(string), "短信发送失败!", 120)
-				SmsModels.Sms{}.HoldBackTel(ps["tel"].(string), "短信发送失败!", 120)
+				models.Sms{}.HoldBackIp(ps["ip"].(string), "短信发送失败!", 120)
+				models.Sms{}.HoldBackTel(ps["tel"].(string), "短信发送失败!", 120)
 				return errors.New("短信发送失败！"), 502
 			}
 		} else {
@@ -110,11 +110,11 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 				//满足条件
 				if rule["action"].(int64) == 1 && rule["frozen_second"].(int64) > 0 {
 					//临时冻结
-					SmsModels.Sms{}.HoldBackTel(ps["tel"].(string), "您的操作过于频繁！", time.Duration(rule["frozen_second"].(int64)))
+					models.Sms{}.HoldBackTel(ps["tel"].(string), "您的操作过于频繁！", time.Duration(rule["frozen_second"].(int64)))
 					returnErr = errors.New("您的操作过于频繁！")
 				} else if rule["action"].(int64) == 2 {
 					//手机号拉黑
-					SmsModels.AppSmsBlackWhite{}.AddBlack(uniappId, 0, ps["tel"].(string), "[自动拉黑]"+rule["note"].(string))
+					models.AppSmsBlackWhite{}.AddBlack(uniappId, 0, ps["tel"].(string), "[自动拉黑]"+rule["note"].(string))
 					returnErr = errors.New("您的操作过于频繁！")
 				}
 			}
@@ -140,11 +140,11 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 				//满足条件
 				if rule["action"].(int64) == 1 && rule["frozen_second"].(int64) > 0 {
 					//临时冻结
-					SmsModels.Sms{}.HoldBackIp(ps["ip"].(string), "您的操作过于频繁！", time.Duration(rule["frozen_second"].(int64)))
+					models.Sms{}.HoldBackIp(ps["ip"].(string), "您的操作过于频繁！", time.Duration(rule["frozen_second"].(int64)))
 					returnErr = errors.New("您的操作过于频繁！")
 				} else if rule["action"].(int64) == 2 {
 					//IP地址拉黑
-					SmsModels.AppSmsBlackWhite{}.AddBlack(uniappId, 1, ps["ip"].(string), "[自动拉黑]"+rule["note"].(string))
+					models.AppSmsBlackWhite{}.AddBlack(uniappId, 1, ps["ip"].(string), "[自动拉黑]"+rule["note"].(string))
 					returnErr = errors.New("您的操作过于频繁！")
 				}
 			}
@@ -167,7 +167,7 @@ func (that SmsHoldBack) Do(eventName string, data ...interface{}) (error, int) {
 			}
 			if sendCount >= rule["sms_max"].(int64) {
 				//临时冻结
-				SmsModels.Sms{}.HoldBackAll(time.Duration(rule["frozen_second"].(int64)))
+				models.Sms{}.HoldBackAll(time.Duration(rule["frozen_second"].(int64)))
 				returnErr = errors.New("短信发送频次超过限制！")
 			}
 		}

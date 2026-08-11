@@ -7,7 +7,7 @@
  * @Date: 2022/2/7 10:48 下午
  */
 
-package SmsModels
+package models
 
 import (
 	"github.com/yqstech/gef/boot/pool"

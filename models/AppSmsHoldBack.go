@@ -7,7 +7,7 @@
  * @Date: 2022/2/8 6:20 下午
  */
 
-package SmsModels
+package models
 
 type AppSmsHoldBack struct {
 }

@@ -10,7 +10,7 @@
 package events
 
 import (
-	"github.com/yqstech/gef-sms/SmsModels"
+	"github.com/yqstech/gef-sms/models"
 	"time"
 )
 
@@ -19,6 +19,6 @@ type SmsSaveCode struct {
 
 // Do 记录短信验证码
 func (that SmsSaveCode) Do(eventName string, data ...interface{}) (error, int) {
-	SmsModels.Sms{}.SaveCode(data[0].(string), data[1].(string), data[2].(time.Duration))
+	models.Sms{}.SaveCode(data[0].(string), data[1].(string), data[2].(time.Duration))
 	return nil, 200
 }

@@ -7,7 +7,7 @@
  * @Date: 2022/3/8 9:43 下午
  */
 
-package AdminHandles
+package admin
 
 import (
 	"github.com/wonderivan/logger"

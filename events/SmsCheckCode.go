@@ -10,7 +10,7 @@
 package events
 
 import (
-	"github.com/yqstech/gef-sms/SmsModels"
+	"github.com/yqstech/gef-sms/models"
 )
 
 type SmsCheckCode struct {
@@ -18,7 +18,7 @@ type SmsCheckCode struct {
 
 // Do 记录短信验证码
 func (that SmsCheckCode) Do(eventName string, data ...interface{}) (error, int) {
-	ok := SmsModels.Sms{}.CheckCode(data[0].(string), data[1].(string))
+	ok := models.Sms{}.CheckCode(data[0].(string), data[1].(string))
 	if ok {
 		return nil, 200
 	}
