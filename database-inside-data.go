@@ -10,10 +10,10 @@
 package sms
 
 import (
-	"github.com/yqstech/gef/dbManager"
+	"github.com/yqstech/gef/dbkit"
 )
 
-var insideData = []dbManager.InsideData{
+var insideData = []dbkit.InsideData{
 	{TableName: "tb_sms_upstream", Condition: [][]interface{}{{"id", "1"}}, Data: map[string]interface{}{
 		"id":            1,
 		"upstream_name": "阿里云短信",

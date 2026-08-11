@@ -15,14 +15,14 @@ import (
 	"github.com/yqstech/gef"
 	"github.com/yqstech/gef-sms/Events"
 	"github.com/yqstech/gef-sms/Registry"
-	"github.com/yqstech/gef/dbManager"
+	"github.com/yqstech/gef/dbkit"
 	"net/http"
 )
 
 func Init(g *gef.Gef) {
 
 	//!数据库自动维护
-	dbm := dbManager.DbManager{}
+	dbm := dbkit.DbManager{}
 	//维护表结构
 	dbm.AutoTable(tables)
 	//维护后台菜单
